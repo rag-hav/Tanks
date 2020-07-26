@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tanks</title>
+  <!-- HTML -->
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="init()">
+  <div id="canvases">
+  <canvas id="backgroundC" class="canvas" style="z-index: 0;">
+    Your browser doesn't support the HTML5 element canvas.
+  </canvas>
+  <canvas id="movablesC" class="canvas" style="z-index: 2;"> </canvas>
+  <canvas id="dropboxesC" class="canvas" style="z-index: 2;"> </canvas>
+  <canvas id="bulletsC" class="canvas" style="z-index: 1;"> </canvas>
+  <canvas id="tank0" class="canvas" style="z-index: 3;"> </canvas>
+  <canvas id="tank1" class="canvas" style="z-index: 3;"> </canvas>
+  </div>
+ 
+<script src="main.js" type="module"></script>
+</body>
+</html>

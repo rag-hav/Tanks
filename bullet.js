@@ -4,13 +4,11 @@ import {Point, principleAngle, distanceBtwPoints, pointInPolygon } from "./utils
 
 class Bullet extends Base2DObj {
   constructor(parentTank, centreX, centreY, angle) {
-    super("bullet", centreX, centreY, 20, 8, "bulletsC");
+    super("bullet", centreX, centreY, 20, 8, 1, "bullets");
     //this.canvas.items.push(this);
-    this.canvas.items = items.bullets;
-    this.name="bullet";
+    this.name = "bullet";
     this.parentTank = parentTank;
     this.angle = angle;
-    
     this.damage = 20;
     this.speed = 400;
     this.hitbox = new Hitbox(this, new Point(this.sizeX / 2, 0));
@@ -20,25 +18,38 @@ class Bullet extends Base2DObj {
     this.cx += this.speed * Math.cos(this.angle) * timeStep;
     this.cy -= this.speed * Math.sin(this.angle) * timeStep;
     if (!this.boundaryCheck()) this.remove();
-    this.hitbox.update();
+    this.hitbox.updateTrueCentre ();
     this.draw();
   }
   
   frame(){
-    for (let tank of items.tanks) {
+    for (let tank of Tanks) {
       if (this.parentTank != tank && this.hitbox.checkCollision(tank.hitbox)) {
         tank.health -= this.damage;
         this.remove();
+        }
       }
-    }
     
-    for (let obs of items.dropboxes) {
-      if (obs.status && this.hitbox.checkCollision(obs.hitbox)) {
+    
+    
+    for (let ob of [...canvases.dropboxes.items, ...canvases. movables.items]) {
+      if (ob.status && this.hitbox.checkCollision(ob.hitbox)) {
         this.remove();
       }
     }
-  this.move();
+    this.move();
+    if (this.status) changeQueue.push(this);
   }
+  drawPath(){
+    let ctx = document.getElementById('background').getContext('2d');
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
+    ctx.lineTo(this.cx, this.cy);
+    ctx.stroke();
+    this.lastPoint = new Point(this.cx, this.cy);
+  }
+  //_draw(){super. _draw();this. drawPath();} 
 }
 
 class FollowBullet extends Bullet{
@@ -90,7 +101,7 @@ class FollowBullet extends Bullet{
     }
       
     else if(this.targetTank == null) {
-      for (let tank of items.tanks)
+      for (let tank of Tanks)
         if (this.parentTank != tank && (distanceBtwPoints(tank.centre, this.centre) < this.radarRadius && Math.abs(Math.atan2(this.cy - tank.cy, tank.cx - this.cx) - principleAngle(this.angle)) < this.radarAngle) && !this.pointInExclusionCentres(tank.centre))
         
             this.targetTank=tank;
@@ -98,15 +109,7 @@ class FollowBullet extends Bullet{
     super.move();
   }
   
-  drawPath(){
-    let ctx = document.getElementById('backgroundC').getContext('2d');
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
-    ctx.lineTo(this.cx, this.cy);
-    ctx.stroke();
-    this.lastPoint = new Point(this.cx, this.cy);
-  }
+  
   
   exclusionCentresDraw(){
     this.updateExclusionCentres();
@@ -130,14 +133,14 @@ class FollowBullet extends Bullet{
     this.ctx.stroke();
     this.ctx.fill();
   }
-  /*
-  _draw(){
+  
+  /*_draw(){
     super._draw();
     this.drawPath();
-   // this.exclusionCentresDraw();
-  //  this.hitbox._draw();
+    this.exclusionCentresDraw();
+   this.hitbox._draw();
   this.radarDraw();
-  }*/
+  } */
 }
 
 export { Bullet, FollowBullet };

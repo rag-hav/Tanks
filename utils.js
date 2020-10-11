@@ -14,7 +14,7 @@ class CanvasWrapper {
   }
 }
 
-class Point{
+class Point {
   constructor(x, y) {
     this.x = x;
     this.y = y;
@@ -41,8 +41,18 @@ function pointInPolygon(p, polygon) {
   return result;
 }
 
-function principleAngle(a){
-  a = (a % (2 * Math.PI)) + ((a<0) * 2 * Math.PI);
+function drawBackground() {
+  let ctx = document.getElementById('background').getContext('2d');
+  let imgKey = 'background';
+  let imgWidth = 250;
+  let imgHeight = 250;
+  for (let i = 0; i < HEIGHT / imgHeight; i++)
+    for (let j = 0; j < WIDTH / imgWidth; j++)
+      ctx.drawImage(images[imgKey], imgWidth * j, imgHeight * i, imgWidth, imgHeight);
+}
+
+function principleAngle(a) {
+  a = (a % (2 * Math.PI)) + ((a < 0) * 2 * Math.PI);
   return a -= 2 * Math.PI * (a > Math.PI);
 }
 
@@ -64,4 +74,16 @@ function getHeight() {
     document.documentElement.clientHeight);
 }
 
-export {CanvasWrapper, Point, distanceBtwPoints, pointInPolygon, principleAngle,getWidth, getHeight};
+var Boundary = [new Point(0, 0), new Point(getWidth(), 0), new Point(getWidth(), getHeight()), new Point(0, getHeight())];
+
+export {
+  CanvasWrapper,
+  Point,
+  distanceBtwPoints,
+  pointInPolygon,
+  principleAngle,
+  getWidth,
+  getHeight,
+  drawBackground,
+  Boundary
+};

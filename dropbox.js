@@ -4,7 +4,7 @@ import {Point} from "./utils.js";
 
 class Dropbox extends Base2DObj {
   constructor(centreX, centreY) {
-    super("dropbox", centreX, centreY, 30, 30, 'dropboxesC');
+    super("dropbox", centreX, centreY, 30, 30, 50, 'dropboxes');
     this.hitbox = new Hitbox(this, [
       new Point(this.sizeX / 2, this.sizeY / 2), 
       new Point(this.sizeX / 2, -this.sizeY / 2), 
@@ -81,14 +81,27 @@ class HealthDropbox extends Dropbox{
   }
 }
 
-let dropboxes = [FollowBulletDropbox, SpeedDropbox, ShieldDropbox, HealthDropbox];
+class InfiniteBulletDropbox extends Dropbox{
+  effect(tank){
+    super.effect();
+    tank.ammo = Infinity;
+    clearTimeout(tank.InfiniteAmmoTimeout);
+    tank.InfineAmmoTimeOut = setTimeout(() => {
+      tank.ammo = tank.maxAmmo;
+      this.remove();
+    }, 10000);
+  }
+}
+
+let dropboxes = [FollowBulletDropbox, SpeedDropbox, ShieldDropbox, HealthDropbox, InfiniteBulletDropbox];
 
 function spawnDropbox(){
-  let x = Math.random() * WIDTH * 0.5 + WIDTH * 0.25;
-  let y = Math.random() * WIDTH * 0.5 + WIDTH * 0.25;
+  let x = Math.random() * WIDTH;
+  let y = Math.random() * HEIGHT;
   let i = Math.floor(Math.random() * dropboxes.length);
+  i=2;
   let db = new dropboxes[i](x, y) ;
-  items.dropboxes.push(db);
+  canvases.dropboxes.items.push(db);
   db.draw();
 }
 

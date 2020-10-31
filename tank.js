@@ -13,7 +13,7 @@ import {
 class Tank extends Base2DObj {
   constructor(i, centreX, centreY, shieldColor) {
 
-    super("tank" + i, centreX, centreY, 100, 60, 200, "tank" + i);
+    super("tank" + i, centreX, centreY, 100, 60, 100, "tank" + i);
     this.name = "tank" + i;
     this.shieldColor = shieldColor;
     this.i = i;

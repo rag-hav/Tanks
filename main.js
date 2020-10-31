@@ -24,6 +24,7 @@ window.WIDTH = getWidth();
 window.changeQueue = [];
 window.Tanks = [];
 
+
 document.addEventListener("touchstart", touchHandler, false);
 document.addEventListener("touchend", touchHandler, false);
 
@@ -77,6 +78,15 @@ function startAnimation() {
       for (let i = 0; i < length_; i++)
         changeQueue.shift().frame();
 
+      var collideables = [...canvases.movables.items, ...canvases.dropboxes.items, ...Tanks];
+      for (let i = 0; i < collideables.length; i++) {
+        for (let j = i + 1; j < collideables.length; j++) {
+
+          if (collideables[i].hitbox.checkCollision(collideables[j].hitbox)) {
+            collideables[i].collision(collideables[j]);
+          } 
+        }
+      }
       for (let canvasId in canvases) {
         let canvas = canvases[canvasId];
         canvas.items = canvas.items.filter((obj) => {

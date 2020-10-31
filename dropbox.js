@@ -45,10 +45,10 @@ class SpeedDropbox extends Dropbox{
   effect(tank){
     super.effect();
     let ratioSize = 0.5;
-    let ratioSpeed = 2;
+    let ratioDrivingForce = 2;
     tank.sizeX *= ratioSize;
     tank.sizeY *= ratioSize;
-    tank.speed *= ratioSpeed;
+    tank.drivingForce *= ratioDrivingForce;
     tank.updateHitbox();
     
     setTimeout (() => {

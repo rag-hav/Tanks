@@ -24,7 +24,9 @@ class Base2DObj {
     this.mass = mass;
     this.velocityX = 0;
     this.velocityY = 0;
-    this.friction = 0.2;
+    this.angle =0;
+    this.friction = 0.1;
+    this.inCollisionWith = [];
     changeQueue.push(this);
   }
 
@@ -39,12 +41,29 @@ class Base2DObj {
     this.velocityY += forceY / this.mass * timeStep;
   }
 
+  collision(obj) {
+    let u1x, u2x, u1y, u2y;
+    u1x = this.velocityX;
+    u1y = this.velocityY;
+    u2x = obj.velocityX;
+    u2y = obj.velocityY;
+
+    this.velocityX = (this.mass * u1x + obj.mass * u2x - obj.mass * (u1x - u2x)) / (this.mass + obj.mass);
+    this.velocityY = (this.mass * u1y + obj.mass * u2y - obj.mass * (u1y - u2y)) / (this.mass + obj.mass);
+
+    obj.velocityX = (obj.mass * u2x + this.mass * u1x - this.mass * (u2x - u1x)) / (this.mass + obj.mass);
+    obj.velocityY = (obj.mass * u2y + this.mass * u1y - this.mass * (u2y - u1y)) / (this.mass + obj.mass);
+  }
+
   remove() {
     this.status = null;
     this.canvas.reDraw = true;
   }
 
-  frame() {}
+  frame() {
+    if (this. velocityX || this. velocityY) this. move();
+    
+  }
 
   move() {
     //friction
@@ -66,6 +85,7 @@ class Base2DObj {
       this.cy = _cy;
       this.velocityY *= -1;
     }
+    this. draw();
   }
 
   _draw() {
@@ -75,7 +95,7 @@ class Base2DObj {
       if (this.angle) this.ctx.rotate(-this.angle);
       this.ctx.drawImage(images[this.imgKey], this.sizeX * this.offsetX, this.sizeY * this.offsetY, this.sizeX, this.sizeY);
       this.ctx.restore();
-      // if (this.hitbox) this.hitbox._draw();
+     // if (this.hitbox) this.hitbox._draw();
     }
   }
 
@@ -119,13 +139,15 @@ class Hitbox {
       this.polygon = false;
       this.radius = radius;
     }
+    this. currentCollisions = [];
     this.trueCentre = new Point(0, 0);
     this.updateTrueCentre();
   }
 
   checkCollision(otherHitbox, firstCall = true) {
+    if (otherHitbox in this.currentCollisions) return false;
     this.updateTrueCentre();
-    if (!firstCall || (otherHitbox.radius + this.radius) > distanceBtwPoints(this.trueCentre, otherHitbox.trueCentre)) {
+    if (!firstCall || (!(otherHitbox in this.currentCollisions) && !(this in otherHitbox.currentCollisions) && (otherHitbox.radius + this.radius) > distanceBtwPoints(this.trueCentre, otherHitbox.trueCentre))) {
       if (!(otherHitbox.polygon || this.polygon)) return true;
 
       this.updatePosition();
@@ -153,6 +175,13 @@ class Hitbox {
   //the force keyword is used by the move in Base2DObj
   //usually we dont want to repeat update stuff in a frame
   //force of course forces it
+  
+  frame(){
+    for (let otherHitbox of this.currentCollisions){
+      if (!this.checkOverlap(otherHitbox))
+        ;
+    }
+  }
 
   updateTrueCentre(force = false) {
     if (force || this.trueCentreUpdateTime != time) {

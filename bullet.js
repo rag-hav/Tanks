@@ -30,8 +30,6 @@ class Bullet extends Base2DObj {
         }
       }
     
-    
-    
     for (let ob of [...canvases.dropboxes.items, ...canvases. movables.items]) {
       if (ob.status && this.hitbox.checkCollision(ob.hitbox)) {
         this.remove();
@@ -102,7 +100,7 @@ class FollowBullet extends Bullet{
       
     else if(this.targetTank == null) {
       for (let tank of Tanks)
-        if (this.parentTank != tank && (distanceBtwPoints(tank.centre, this.centre) < this.radarRadius && Math.abs(Math.atan2(this.cy - tank.cy, tank.cx - this.cx) - principleAngle(this.angle)) < this.radarAngle) && !this.pointInExclusionCentres(tank.centre))
+        if (this.parentTank != tank && tank.status != "dead" && (distanceBtwPoints(tank.centre, this.centre) < this.radarRadius && Math.abs(Math.atan2(this.cy - tank.cy, tank.cx - this.cx) - principleAngle(this.angle)) < this.radarAngle) && !this.pointInExclusionCentres(tank.centre))
         
             this.targetTank=tank;
     }
@@ -133,12 +131,12 @@ class FollowBullet extends Bullet{
     this.ctx.stroke();
     this.ctx.fill();
   }
-  
-  /*_draw(){
+  /*
+  _draw(){
     super._draw();
     this.drawPath();
-    this.exclusionCentresDraw();
-   this.hitbox._draw();
+   // this.exclusionCentresDraw();
+   //this.hitbox._draw();
   this.radarDraw();
   } */
 }

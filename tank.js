@@ -109,7 +109,7 @@ class Tank extends Base2DObj {
   }
 
   touch(evType) {
-    if (evType == "touchstart")
+    if (evType == "touchstart" || evType == "keydown")
       if (this.status == "idle") {
         this.status = "moving";
         this.radialSpeed *= -1;
@@ -118,7 +118,7 @@ class Tank extends Base2DObj {
         //this.velocityY = -this.startSpeed * Math.sin(this.angle);
       }
 
-    if (evType == "touchend")
+    if (evType == "touchend"|| evType == "keyup")
       if (this.status == "moving") {
         this.status = "idle";
       }

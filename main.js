@@ -27,6 +27,8 @@ window.Tanks = [];
 
 document.addEventListener("touchstart", touchHandler, false);
 document.addEventListener("touchend", touchHandler, false);
+document.addEventListener("keyup", keyHandler, false);
+document.addEventListener("keydown", keyHandler, false);
 
 for (let c of document.getElementsByTagName("canvas")) {
   canvases[c.id] = new CanvasWrapper(c, WIDTH, HEIGHT);
@@ -44,6 +46,12 @@ canvases.movables.items = [new RectObstacle(WIDTH / 2, HEIGHT / 2)];
 function touchHandler(ev) {
   let i = Number(ev.changedTouches[0].pageY > HEIGHT / 2);
   canvases["tank" + i].items[0].touch(ev.type);
+}
+function keyHandler(ev) {
+	ev = ev || window.event;
+	if(canvases["tank" + (ev.key - 1)]){
+	  canvases["tank" + (ev.key - 1)].items[0].touch(ev.type);
+  }
 }
 
 function initializeImages(resolve, reject) {
